@@ -266,26 +266,7 @@ function connect_to_server(){
 						html += '</td>';
 						html += '<td style="text-align:left;padding-left:20px">';
 						html +=	'<div style="display: inline-block; vertical-align: middle;">';
-						html += '<p style="font-weight:500;">DELIVERED TO <span style="color:#5596E6">' + txs[i].newOwner +'</span></p>';
-						html += '<p style="">' + txs[i].vDate +'</p>';
-						html += '<p style="">' + txs[i].location +'</p>';
-						html +=	'</div>';
-						html += '</td>';
-						html += '</tr>';
-			        }
-			        else if(txs[i].transactionType == "SELL"){
-			          //litem = {avatar:"ion-ios-cart-outline", date: data.batch.vDate, location: data.batch.location, desc:"SOLD TO ", owner:data.batch.owner};
-			        	html += '<tr>';
-						html +=	'<td>';
-						html +=	'<div style="font-size: 34px;color:#5596E6;float:right;"><i class="ion-ios-cart-outline"></i></div>';
-						html += '</td>';
-						html += '<td style="text-align:left;padding-left:20px">';
-						html +=	'<div style="display: inline-block; vertical-align: middle;">';
-						if(txs[i].quantity<=1){
-							html += '<p style="font-weight:500;">SOLD <span style="color:#5596E6">' + txs[i].quantity +'</span> ITEM TO <span style="color:#5596E6">' + txs[i].owner +'</span></p>';
-						}else {
-							html += '<p style="font-weight:500;">SOLD <span style="color:#5596E6">' + txs[i].quantity +'</span> ITEMS TO <span style="color:#5596E6">' + txs[i].owner +'</span></p>';
-						}
+						html += '<p style="font-weight:500;">IN TRANSIT TO <span style="color:#5596E6">' + txs[i].newOwner +'</span></p>';
 						html += '<p style="">' + txs[i].vDate +'</p>';
 						html += '<p style="">' + txs[i].location +'</p>';
 						html +=	'</div>';
