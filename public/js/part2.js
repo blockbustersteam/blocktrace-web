@@ -61,7 +61,7 @@ $(document).on('ready', function() {
 		if(user.username){
 			$("input[name='ItemId']").val(randStr(15).toUpperCase());
 		
-			$("input[name='Date']").val(formatDate(new Date(), '%Y-%m-%d %H:%M:$S'));
+			$("input[name='Date']").val(formatDate(new Date(), '%Y-%m-%d %H:%M'));
 			
 			$("#submit").removeAttr("disabled");		
 		}
