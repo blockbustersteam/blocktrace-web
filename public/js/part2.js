@@ -8,6 +8,7 @@
 /* global bag */
 /* global $ */
 var ws = {};
+var itId = '';
 var user = {username: bag.session.username};
 var valid_users = ["MANUFACTURER","DISTRIBUTOR","RETAILER"];
 var panels = [
@@ -42,14 +43,22 @@ $(document).on('ready', function() {
 			$("#newItemLink").show();
 			$("#newItemPanel").show();
 			$("#dashboardLink").show();
+			$("#transferLink").show();
+			$("#confirmLink").hide();
 			$("#dashboardPanel").hide();
 			$("#itemDetailsTable").hide();
+			$("#transferForm").hide();
+			$("#confirmForm").hide();
 		} else if(user.username) {
 			$("#dashboardLink").show();
+			$("#transferLink").show();
+			$("#confirmLink").show();
 			$("#dashboardPanel").show();
 			$("#newItemLink").hide();
 			$("#newItemPanel").hide();
 			$("#itemDetailsTable").hide();
+			$("#transferForm").hide();
+			$("#confirmForm").hide();
 		}
 
 	}
@@ -61,7 +70,7 @@ $(document).on('ready', function() {
 		if(user.username){
 			$("input[name='ItemId']").val(randStr(15).toUpperCase());
 		
-			$("input[name='Date']").val(formatDate(new Date(), '%Y-%m-%d %H:%M'));
+			$("input[name='Date']").val(formatDate(Date(), '%Y-%m-%d %H:%M'));
 			
 			$("#submit").removeAttr("disabled");		
 		}
@@ -99,6 +108,53 @@ $(document).on('ready', function() {
 		}
 		return false;
 	});
+
+	$("#transfersubmit").click(function(){
+		if(user.username){
+			var obj = {
+				type: "transferItem",
+				item: {
+					id: itId,
+					user: user.username,
+					date: formatDate(Date(), '%Y-%M-%d %I:%m%p'),
+					location: bag.session.user_loc,
+					newowner: $("input[name='AccountId']").val()
+				}
+			};
+			if(obj.item.id && obj.item.newowner) {
+				ws.send(JSON.stringify(obj));
+			}
+			else {
+				alert("Please select items to transfer first");
+			}
+		}
+		return false;
+	});
+
+
+	$("#confirmsubmit").click(function(){
+		if(user.username){
+			var obj = {
+				type: "confirmItem",
+				item: {
+					id: itId,
+					user: user.username,
+					date: formatDate(Date(), '%Y-%m-%d %H:%M'),
+					location: bag.session.user_loc
+				}
+			};
+			if(obj.item.id) {
+				ws.send(JSON.stringify(obj));
+			}
+			else {
+				slert("Please select items to confirm first");
+			}
+		}
+		return false;
+	});
+
+
+
 	
 	$("#newItemLink").click(function(){
 		$("#itemTagPanel").hide();
@@ -106,7 +162,7 @@ $(document).on('ready', function() {
 		$('#spinner2').hide();
 		$('#openTrades').hide();
 	});
-	
+
 	$("#dashboardLink").click(function(){
 		if(user.username) {
 			$("#dashboardPanel").show();
@@ -114,10 +170,39 @@ $(document).on('ready', function() {
 			$('#openTrades').hide();
 			$("#itemTagPanel").hide();
 			$("#newItemPanel").hide();
+			$("#newItemPanel").hide();
+			$("#transferForm").hide();
+			$("#confirmForm").hide();
 			ws.send(JSON.stringify({type: "getAllItems", v: 2}));
 		}
 	});
 	
+	$("#transferLink").click(function(){
+		if(user.username) {
+			$("#dashboardPanel").show();
+			$('#spinner2').show();
+			$('#openTrades').hide();
+			$("#itemTagPanel").hide();
+			$("#newItemPanel").hide();
+			$("#transferForm").show();
+			$("#confirmForm").hide();
+			ws.send(JSON.stringify({type: "getAllItemsStatus", itstatus: "VERIFIED", v: 2}));
+		}
+	});
+	
+	$("#confirmLink").click(function(){
+		if(user.username) {
+			$("#dashboardPanel").show();
+			$('#spinner2').show();
+			$('#openTrades').hide();
+			$("#itemTagPanel").hide();
+			$("#newItemPanel").hide();
+			$("#confirmForm").show();
+			$("#transferForm").hide();
+			ws.send(JSON.stringify({type: "getAllItemsStatus", itstatus: "IN OWNERSHIP TRANSIT", v: 2}));
+		}
+	});
+
 	//login events
 	$("#whoAmI").click(function(){													//drop down for login
 		if($("#loginWrap").is(":visible")){
@@ -147,7 +232,7 @@ $(document).on('ready', function() {
 	
 
 	$("#dashboardTable").on('click', 'tr', function() {
-	    var itId = $(this).find('td:first').text() ;
+	    itId = $(this).find('td:first').text() ;
 	    if(itId != 'Nothing here...'){
 	    	ws.send(JSON.stringify({type: "getItem", itemId: itId}));
 	    }
@@ -311,6 +396,12 @@ function connect_to_server(){
 				$('#tagWrapper').show();
 				console.log(data.Id);
 				$('#itemTag').qrcode(data.Id);
+			}
+			else if(data.msg === 'itemTransferred'){
+				alert('Transfer completed!');
+			}
+			else if(data.msg === 'itemConfirmed'){
+				alert('Transfer confirmed!');
 			}
 			else if(data.msg === 'reset'){						
 				if(user.username && bag.session.user_role && bag.session.user_role.toUpperCase() === "manufacturer".toUpperCase()) {

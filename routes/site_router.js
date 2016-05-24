@@ -48,6 +48,7 @@ router.route("/dashboard").get(function(req, res){
 	res.render('part2', {title: 'CheckIt', bag: {setup: setup, e: process.error, session: req.session}} );
 });
 
+/*
 router.route("/getBatch").post(function(req, res){
 
 	chaincode.query.getBatch([req.body.batchId], function (e, batch){
@@ -125,7 +126,9 @@ router.route("/transferBatch").post(function(req, res){
 		}
 	})
 });
+*/
 
+/*
 router.route("/sellItem").post(function(req, res){
 	//console.log([req.body.batchId,req.body.user,req.body.date,req.body.location,(req.body.quantity).toString(),req.body.newOwner]);
 	chaincode.invoke.sellBatchItem([req.body.batchId,req.body.user,req.body.date,req.body.location,(req.body.quantity).toString(),req.body.newOwner], function (e, resMsg){
@@ -150,7 +153,7 @@ router.route("/updateBatchQuality").post(function(req, res){
 		}
 	})
 });
-
+*/
 
 router.route("/login").get(function(req, res){
 	res.render('login', {title: 'Login', bag: {setup: setup, e: process.error, session: req.session}} );

@@ -33,3 +33,13 @@
 				tr 
 					th#bDetHeader(colspan="2" style="font-size: 12px;")
 			tbody#itemDetailsBody
+		
+		div(style="padding-left:36%")
+			form(action="/dashboard" method="POST")#transferForm
+				input(type="text" name="AccountId" placeholder="Account ID")
+				button(type="button" href="#transfer" title="Transfer")#transfersubmit
+					span TRANSFER
+			form(action="/dashboard" method="POST")#confirmForm
+				button(type="button" href="#confirm" title="Confirm")#confirmsubmit
+					span CONFIRM 
+				

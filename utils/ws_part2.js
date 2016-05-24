@@ -23,6 +23,14 @@ module.exports.process_msg = function(ws, data, owner){
 			chaincode.invoke.createItem([data.item.id, data.item.name, data.item.currentowner, data.item.barcode, data.item.vdate, data.item.location], cb_invoked_createitem);				//create a new paper
 		}
 	}
+	else if(data.type == 'transferItem'){
+		console.log('Tranfer Item ', data);
+		chaincode.invoke.transferOwnership([data.item.id, data.item.user, data.item.date, data.item.location, data.item.newowner], cb_invoked_transferitem);
+	}
+	else if(data.type == 'confirmItem'){
+		console.log('Confirm Item ', data);
+		chaincode.invoke.confirmOwnership([data.item.id, data.item.user, data.item.date, data.item.location], cb_invoked_confirmitem);
+	}
 	else if(data.type == 'getItem'){
 		console.log('Get Item', data.itemId);
 		chaincode.query.getItemDetailsWithID([data.itemId], cb_got_item);
@@ -31,7 +39,11 @@ module.exports.process_msg = function(ws, data, owner){
 		console.log('Get All Items', owner);
 		chaincode.query.getCurrentOwnerItems([owner], cb_got_allitems);
 	}
-	
+	else if(data.type == 'getAllItemsStatus'){
+		console.log('Get All Items By Status', data.itstatus, owner);
+		chaincode.query.getCurrentOwnerItemsByStatus([owner, data.itstatus], cb_got_allitems);
+	}
+
 	function cb_got_item(e, item){
 		if(e != null){
 			console.log('Get Item error', e);
@@ -59,10 +71,31 @@ module.exports.process_msg = function(ws, data, owner){
 			console.log("Item ID #" + data.item.id)
 			sendMsg({msg: 'itemCreated', Id: data.item.id});
 		}
-		
-
 	}
-	
+
+	function cb_invoked_transferitem(e, a){
+		console.log('response: ', e, a);
+		if(e != null){
+			console.log('Invoked transfer item error', e);
+		}
+		else{
+			console.log("Item ID #" + data.item.id)
+			sendMsg({msg: 'itemTransferred'});
+		}
+	}
+
+	function cb_invoked_confirmitem(e, a){
+		console.log('response: ', e, a);
+		if(e != null){
+			console.log('Invoked confirm item error', e);
+		}
+		else{
+			console.log("Item ID #" + data.item.id)
+			sendMsg({msg: 'itemConfirmed'});
+		}
+	}
+
+
 	//call back for getting the blockchain stats, lets get the block height now
 	var chain_stats = {};
 	function cb_chainstats(e, stats){
