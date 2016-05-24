@@ -9,7 +9,7 @@
 /* global $ */
 var ws = {};
 var user = {username: bag.session.username};
-var valid_users = ["CERTIFIER","FISHCO","MANUFACTURER"];
+var valid_users = ["MANUFACTURER","DISTRIBUTOR","RETAILER"];
 var panels = [
 	{
 		name: "dashboard",
@@ -38,18 +38,18 @@ $(document).on('ready', function() {
 	// Only show tabs if a user is logged in
 	if(user.username) {
 		// Display tabs based on user's role
-		if(bag.session.user_role && bag.session.user_role.toUpperCase() === "certifier".toUpperCase()) {
-			$("#dashboardLink").show();
-			$("#dashboardPanel").show();
-			$("#newItemLink").hide();
-			$("#newItemPanel").hide();
-			$("#batchDetailsTable").hide();
-			
-		} else if(user.username) {
+		if(bag.session.user_role && bag.session.user_role.toUpperCase() === "manufacturer".toUpperCase()) {
 			$("#newItemLink").show();
 			$("#newItemPanel").show();
 			$("#dashboardLink").hide();
 			$("#dashboardPanel").hide();
+			$("#itemDetailsTable").hide();
+		} else if(user.username) {
+			$("#dashboardLink").show();
+			$("#dashboardPanel").show();
+			$("#newItemLink").hide();
+			$("#newItemPanel").hide();
+			$("#itemDetailsTable").hide();
 		}
 
 	}
@@ -75,9 +75,9 @@ $(document).on('ready', function() {
 							type: "createItem",
 							item: {
 								id: $("input[name='ItemId']").val(),
-								name: $("select[name='Name']").val(),
+								name: $("input[name='Name']").val(),
 								currentowner: user.username, 
-								barcode: $("select[name='Barcode']").val(),
+								barcode: $("input[name='Barcode']").val(),
 								location: bag.session.user_loc,
 								vdate: $("input[name='Date']").val()
 							}
@@ -211,14 +211,14 @@ function connect_to_server(){
 				$('#spinner2').hide();
 				$('#openTrades').show();
 			}
-			else if(data.msg === 'batch'){
+			else if(data.msg === 'item'){
 				console.log(data);
-				var txs = data.batch.transactions;
+				var txs = data.item.transactions;
 				var html = ''
-				$("#batchDetailsTable").show();
+				$("#itemDetailsTable").show();
 				for(var i=0; i<txs.length; i++){
 					console.log(txs[i]);
-					$("#bDetHeader").html("BATCH #" + data.batch.id + ' - <span style="font-size:16px;font-weight:500">' + data.batch.bType + '</span>');
+					$("#bDetHeader").html("ITEM #" + data.item.id + ' - <span style="font-size:16px;font-weight:500">' + data.item.name + '</span>');
 
 
 					if(txs[i].ttype == "CREATE"){
