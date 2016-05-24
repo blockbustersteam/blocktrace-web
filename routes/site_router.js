@@ -39,6 +39,7 @@ router.route("/home").get(function(req, res){
 
 router.route("/newItem").get(function(req, res){
 	check_login(res, req);
+	console.log('ah ha');
 	res.render('part2', {title: 'CheckIt', bag: {setup: setup, e: process.error, session: req.session}} );
 });
 
@@ -195,6 +196,8 @@ module.exports = router;
 
 
 function check_login(res, req){
+	console.log('oh oh');
+	console.log(req.session.username);
 	if(!req.session.username || req.session.username == ''){
 		console.log('! not logged in, redirecting to login');
 		res.redirect('/login');

@@ -9,7 +9,7 @@
 /* global $ */
 var ws = {};
 var user = {username: bag.session.username};
-var valid_users = ["CERTIFIER","FISHCO"];
+var valid_users = ["CERTIFIER","FISHCO","MANUFACTURER"];
 var panels = [
 	{
 		name: "dashboard",
@@ -45,6 +45,8 @@ $(document).on('ready', function() {
 			$("#batchDetailsTable").hide();
 			
 		} else if(user.username) {
+			console.log('here');
+			console.log(bag.sesson.user_role);
 			$("#newItemLink").show();
 			$("#newItemPanel").show();
 			$("#dashboardLink").hide();
@@ -58,10 +60,9 @@ $(document).on('ready', function() {
 	// =================================================================================
 	$("#generate").click(function(){
 		if(user.username){
-			$("input[name='BatchId']").val(randStr(15).toUpperCase());
+			$("input[name='ItemId']").val(randStr(15).toUpperCase());
 		
 			$("input[name='Date']").val(formatDate(new Date(), '%d-%M-%Y %I:%m%p'));
-			$("input[name='Quantity']").val(10);
 			
 			$("#submit").removeAttr("disabled");		
 		}
@@ -72,26 +73,26 @@ $(document).on('ready', function() {
 	$("#submit").click(function(){
 		if(user.username){
 			var obj = 	{
-							type: "createBatch",
+							type: "createItem",
 							batch: {
-								id: $("input[name='BatchId']").val(),
-								bType: $("select[name='Type']").val(),
-								quantity: $("input[name='Quantity']").val(),
+								id: $("input[name='ItemId']").val(),
+								name: $("select[name='Name']").val(),
+								currentowner: $("select[name='Manufacturer']").val(),
+								barcode: $("select[name='Barcode']").val(),
 								location: $("input[name='Location']").val(),
-								vDate: $("input[name='Date']").val()
+								vdate: $("input[name='Date']").val()
 							}
 						};
 
 			if(obj.batch && obj.batch.id){
-				console.log('creating batch, sending', obj);
+				console.log('creating item, sending', obj);
 				ws.send(JSON.stringify(obj));
 				$(".panel").hide();
-				$('#batchTag').html('');
+				$('#itemTag').html('');
 				$('#spinner').show();
 				$('#tagWrapper').hide();
-				$("#batchTagPanel").show();
-				$("input[name='BatchId']").val('');
-				$("input[name='Quantity']").val(''),
+				$("#itemTagPanel").show();
+				$("input[name='ItemId']").val('');
 				$("input[name='Date']").val('')
 				$("#submit").prop('disabled', true);
 
@@ -101,7 +102,7 @@ $(document).on('ready', function() {
 	});
 	
 	$("#newItemLink").click(function(){
-		$("#batchTagPanel").hide();
+		$("#itemTagPanel").hide();
 		$("#newItemPanel").show();
 	});
 	
@@ -323,11 +324,11 @@ function connect_to_server(){
 					new_block(temp);
 				}									//send to blockchain.js
 			}
-			else if(data.msg === 'batchCreated'){
+			else if(data.msg === 'itemCreated'){
 				$("#notificationPanel").animate({width:'toggle'});
 				$('#spinner').hide();
 				$('#tagWrapper').show();
-				$('#batchTag').qrcode(data.batchId);
+				$('#itemTag').qrcode(data.itemId);
 			}
 			else if(data.msg === 'reset'){						
 				if(user.username && bag.session.user_role && bag.session.user_role.toUpperCase() === "certifier".toUpperCase()) {

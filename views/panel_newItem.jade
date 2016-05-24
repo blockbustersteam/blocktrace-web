@@ -9,20 +9,15 @@
 			legend 
 				input(type="text" name="ItemId" placeholder="Item Id" disabled)
 			legend 
-				select(name="Type")
-					option Salmon
-					option Barramundi
-					option Dory
-					option Tuna
-					option Ray
-				span.hint 
+				input(type="text" name="Name" placeholder="Name")
+			legend 
+				input(type="text" name="Manufacturer" placeholder="Manufacturer") # note this will be changed to auto-generated later
+			legend
+				input(type="text" name="Barcode" placeholder="Barcode")
 			legend 
 				input(type="text" name="Date" placeholder="Date" disabled)
 			legend 
-				input(type="text" name="Location" placeholder="Location" value="Sydney Fish Market" disabled)
-			legend 
-				input(type="number" name="Quantity" placeholder="Items Quantity" min="1")
-			
+				input(type="text" name="Location" placeholder="Location")
 			legend
 				button(type="button" style="margin:10px 10px 5px 10px")#generate
 					span.fa.fa-cog &nbsp;&nbsp;

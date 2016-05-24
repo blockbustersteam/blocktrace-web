@@ -17,10 +17,10 @@ module.exports.process_msg = function(ws, data, owner){
 		console.log('Chainstats msg');
 		ibc.chain_stats(cb_chainstats);
 	}
-	else if(data.type == 'createBatch'){
-		console.log('Create Batch ', data, owner);
-		if(data.batch){
-			chaincode.invoke.createBatch([data.batch.id,data.batch.bType, owner, data.batch.quantity, data.batch.vDate, data.batch.location], cb_invoked_createbatch);				//create a new paper
+	else if(data.type == 'createItem'){
+		console.log('Create Item ', data, owner);
+		if(data.item){
+			chaincode.invoke.createItem([data.item.id, data.item.name, data.item.currentowner, data.item.barcode, data.item.vdate, data.item.location], cb_invoked_createitem);				//create a new paper
 		}
 	}
 	else if(data.type == 'getBatch'){
@@ -50,14 +50,14 @@ module.exports.process_msg = function(ws, data, owner){
 		}
 	}
 	
-	function cb_invoked_createbatch(e, a){
+	function cb_invoked_createitem(e, a){
 		console.log('response: ', e, a);
 		if(e != null){
-			console.log('Invoked create batch error', e);
+			console.log('Invoked create item error', e);
 		}
 		else{
-			console.log("batch ID #" + data.batch.id)
-			sendMsg({msg: 'batchCreated', batchId: data.batch.id});
+			console.log("Item ID #" + data.item.id)
+			sendMsg({msg: 'itemCreated', Id: data.item.id});
 		}
 		
 
