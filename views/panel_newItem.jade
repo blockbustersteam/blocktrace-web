@@ -1,0 +1,30 @@
+#newItemPanel(hidden).panel
+	h1 Enter Item Details
+	hr
+
+	#innerWrap
+		img(src="/imgs/pharma.png" style="float:left;margin-right: 60px; border-radius: 30px; width: 38%;box-shadow: 8px 7px 12px #888888;")
+		
+		form(action="/newItem" method="POST")#newItemform
+			legend 
+				input(type="text" name="ItemId" placeholder="Item Id" disabled)
+			legend 
+				input(type="text" name="Name" placeholder="Item Name") 
+			legend 
+				input(type="text" name="Current Owner" placeholder="Current Owner" disabled)
+			legend 
+				input(type="text" name="Barcode" placeholder="Barcode")
+			legend 
+				input(type="text" name="Date" placeholder="Date" disabled)
+			legend
+				input(type="text" name="Location" placeholder="Location")
+			legend 
+				button(type="button" style="margin:10px 10px 5px 10px")#generate
+					span.fa.fa-cog &nbsp;&nbsp;
+					span GENERATE
+
+			legend
+				button(type="button" style="margin:10px 10px 5px 10px" disabled)#submit
+					span.fa.fa-plus &nbsp;&nbsp;
+					span SUBMIT
+				
