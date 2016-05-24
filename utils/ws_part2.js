@@ -23,30 +23,30 @@ module.exports.process_msg = function(ws, data, owner){
 			chaincode.invoke.createItem([data.item.id, data.item.name, data.item.currentowner, data.item.barcode, data.item.vdate, data.item.location], cb_invoked_createitem);				//create a new paper
 		}
 	}
-	else if(data.type == 'getBatch'){
-		console.log('Get Batch', data.batchId);
-		chaincode.query.getBatch([data.batchId], cb_got_batch);
+	else if(data.type == 'getItem'){
+		console.log('Get Item', data.itemId);
+		chaincode.query.getItemDetailsWithID([data.itemId], cb_got_item);
 	}
-	else if(data.type == 'getAllBatches'){
-		console.log('Get All Batches', owner);
-		chaincode.query.getAllBatches([owner], cb_got_allbatches);
-	}
-	
-	function cb_got_batch(e, batch){
-		if(e != null){
-			console.log('Get Batch error', e);
-		}
-		else{
-			sendMsg({msg: 'batch', batch: JSON.parse(batch)});
-		}
+	else if(data.type == 'getAllItems'){
+		console.log('Get All Items', owner);
+		chaincode.query.getCurrentOwnerItems([owner], cb_got_allitems);
 	}
 	
-	function cb_got_allbatches(e, allBatches){
+	function cb_got_item(e, item){
 		if(e != null){
-			console.log('Get All Batches error', e);
+			console.log('Get Item error', e);
 		}
 		else{
-			sendMsg({msg: 'allBatches', batches: JSON.parse(allBatches).batches});
+			sendMsg({msg: 'item', item: JSON.parse(item)});
+		}
+	}
+	
+	function cb_got_allitems(e, allItems){
+		if(e != null){
+			console.log('Get All Items error', e);
+		}
+		else{
+			sendMsg({msg: 'allItems', items: JSON.parse(allItems).items});
 		}
 	}
 	

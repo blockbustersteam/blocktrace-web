@@ -1,5 +1,5 @@
 #dashboardPanel(hidden).panel
-	h1 Batch Tracker
+	h1 Item Tracker
 	hr
 
 	#dashboardModal.modalDialog(style="margin-top: 200px")
@@ -9,7 +9,7 @@
 					hr
 				.modal-content
 					form#dashboardFilter
-						input#dashboard_batchId.dashboard-filter(type="text" name="batchId" placeholder="Batch Id")
+						input#dashboard_itemId.dashboard-filter(type="text" name="itemId" placeholder="Item Id")
 						br
 						br
 						a.filter-button(href="#close" title="Close" ) Close
@@ -25,11 +25,11 @@
 		table#dashboardTable.tablesorter(style="width:30%;float:left")
 			thead
 				tr 
-					th BATCH ID
+					th ITEM ID
 			tbody#dashboardBody
 
-		table#batchDetailsTable.tablesorter(style="width:64%;float:right")
+		table#itemDetailsTable.tablesorter(style="width:64%;float:right")
 			thead
 				tr 
 					th#bDetHeader(colspan="2" style="font-size: 12px;")
-			tbody#batchDetailsBody
+			tbody#itemDetailsBody

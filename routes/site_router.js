@@ -185,7 +185,7 @@ router.route("/:page").post(function(req, res){
 					req.session.user_loc = creds[i].location;
 				} else {
 					console.log("user location not specified, set as unknown by default");
-					req.session.user_loc = "Unknown";
+					req.session.user_loc = "Location Unknown";
 				}
 
 				res.redirect('/newItem');

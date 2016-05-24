@@ -41,7 +41,7 @@ $(document).on('ready', function() {
 		if(bag.session.user_role && bag.session.user_role.toUpperCase() === "manufacturer".toUpperCase()) {
 			$("#newItemLink").show();
 			$("#newItemPanel").show();
-			$("#dashboardLink").hide();
+			$("#dashboardLink").show();
 			$("#dashboardPanel").hide();
 			$("#itemDetailsTable").hide();
 		} else if(user.username) {
@@ -103,13 +103,18 @@ $(document).on('ready', function() {
 	$("#newItemLink").click(function(){
 		$("#itemTagPanel").hide();
 		$("#newItemPanel").show();
+		$('#spinner2').hide();
+		$('#openTrades').hide();
 	});
 	
 	$("#dashboardLink").click(function(){
 		if(user.username) {
+			$("#dashboardPanel").show();
 			$('#spinner2').show();
 			$('#openTrades').hide();
-			ws.send(JSON.stringify({type: "getAllBatches", v: 2}));
+			$("#itemTagPanel").hide();
+			$("#newItemPanel").hide();
+			ws.send(JSON.stringify({type: "getAllItems", v: 2}));
 		}
 	});
 	
@@ -142,8 +147,10 @@ $(document).on('ready', function() {
 	
 
 	$("#dashboardTable").on('click', 'tr', function() {
-	    var bId = $(this).find('td:first').text() ;
-	    ws.send(JSON.stringify({type: "getBatch", batchId: bId}));
+	    var itId = $(this).find('td:first').text() ;
+	    if(itId != 'Nothing here...'){
+	    	ws.send(JSON.stringify({type: "getItem", itemId: itId}));
+	    }
 	});
 });
 
@@ -187,10 +194,10 @@ function connect_to_server(){
 		clear_blocks();
 		$("#errorNotificationPanel").fadeOut();
 		ws.send(JSON.stringify({type: "chainstats", v:2}));
-		if(user.username && bag.session.user_role && bag.session.user_role.toUpperCase() === "certifier".toUpperCase()) {
+		if(user.username && bag.session.user_role && bag.session.user_role.toUpperCase() === "manufacturer".toUpperCase()) {
 			$('#spinner2').show();
 			$('#openTrades').hide();
-			ws.send(JSON.stringify({type: "getAllBatches", v: 2}));
+			ws.send(JSON.stringify({type: "getAllItems", v: 2}));
 		}
 
 	}
@@ -205,9 +212,9 @@ function connect_to_server(){
 		try{
 			var data = JSON.parse(msg.data);
 			
-			if(data.msg === 'allBatches'){
+			if(data.msg === 'allItems'){
 				console.log("---- ", data);
-				build_Batches(data.batches, null);
+				build_Items(data.items, null);
 				$('#spinner2').hide();
 				$('#openTrades').show();
 			}
@@ -221,7 +228,7 @@ function connect_to_server(){
 					$("#bDetHeader").html("ITEM #" + data.item.id + ' - <span style="font-size:16px;font-weight:500">' + data.item.name + '</span>');
 
 
-					if(txs[i].ttype == "CREATE"){
+					if(txs[i].transactionType == "CREATE"){
 			          //litem = {avatar:"ion-ios-box-outline", date: tx.vDate, location: tx.location, desc:"ADDED BY ", owner:tx.owner};
 				        html += '<tr>';
 						html +=	'<td>';
@@ -229,15 +236,14 @@ function connect_to_server(){
 						html += '</td>';
 						html += '<td style="text-align:left;padding-left:20px">';
 						html +=	'<div style="display: inline-block; vertical-align: middle;">';
-						html += '<p style="font-weight:500;">ADDED BY <span style="color:#5596E6">' + txs[i].owner +'</span></p>';
+						html += '<p style="font-weight:500;">ADDED BY <span style="color:#5596E6">' + txs[i].newOwner +'</span></p>';
 						html += '<p style="">' + txs[i].vDate +'</p>';
 						html += '<p style="">' + txs[i].location +'</p>';
-						html += '<p style="">Qty: ' + txs[i].quantity +'</p>';
 						html +=	'</div>';
 						html += '</td>';
 						html += '</tr>';
 			        }
-			        else if(txs[i].ttype == "CLAIM"){
+			        else if(txs[i].transactionType == "CONFIRM"){
 			          //litem = {avatar:"ion-ios-barcode-outline", date: data.batch.vDate, location: data.batch.location, desc:"PICKED UP BY ", owner:data.batch.owner};
 			        	html += '<tr>';
 						html +=	'<td>';
@@ -245,15 +251,14 @@ function connect_to_server(){
 						html += '</td>';
 						html += '<td style="text-align:left;padding-left:20px">';
 						html +=	'<div style="display: inline-block; vertical-align: middle;">';
-						html += '<p style="font-weight:500;">PICKED UP BY <span style="color:#5596E6">' + txs[i].owner +'</span></p>';
+						html += '<p style="font-weight:500;">PICKED UP BY <span style="color:#5596E6">' + txs[i].newOwner +'</span></p>';
 						html += '<p style="">' + txs[i].vDate +'</p>';
 						html += '<p style="">' + txs[i].location +'</p>';
-						html += '<p style="">Qty: ' + txs[i].quantity +'</p>';
 						html +=	'</div>';
 						html += '</td>';
 						html += '</tr>';
 			        }
-			        else if(txs[i].ttype == "TRANSFER"){
+			        else if(txs[i].transactionType == "TRANSFER"){
 			          //litem = {avatar:"ion-ios-shuffle", date: data.batch.vDate, location: data.batch.location, desc:"DELIVERED TO ", owner:data.batch.owner};
 			        	html += '<tr>';
 						html +=	'<td>';
@@ -261,17 +266,14 @@ function connect_to_server(){
 						html += '</td>';
 						html += '<td style="text-align:left;padding-left:20px">';
 						html +=	'<div style="display: inline-block; vertical-align: middle;">';
-						html += '<p style="font-weight:500;">DELIVERED TO <span style="color:#5596E6">' + txs[i].owner +'</span></p>';
+						html += '<p style="font-weight:500;">DELIVERED TO <span style="color:#5596E6">' + txs[i].newOwner +'</span></p>';
 						html += '<p style="">' + txs[i].vDate +'</p>';
 						html += '<p style="">' + txs[i].location +'</p>';
-						html += '<p style="">Qty: ' + txs[i].quantity +'</p>';
-						html += '<p style="">Recipient\'s Signature:</p>';
-						html += '<img alt="sign" style="border:1px #D4DCDC solid;" src="' + txs[i].signature + '" />'
 						html +=	'</div>';
 						html += '</td>';
 						html += '</tr>';
 			        }
-			        else if(txs[i].ttype == "SELL"){
+			        else if(txs[i].transactionType == "SELL"){
 			          //litem = {avatar:"ion-ios-cart-outline", date: data.batch.vDate, location: data.batch.location, desc:"SOLD TO ", owner:data.batch.owner};
 			        	html += '<tr>';
 						html +=	'<td>';
@@ -290,18 +292,17 @@ function connect_to_server(){
 						html += '</td>';
 						html += '</tr>';
 			        }
-			        else if(txs[i].ttype == "UPDATE QUALITY"){
-			          //litem = {ttype:data.batch.ttype, avatar:"ion-ios-bolt-outline", date: data.batch.vDate, location: data.batch.location, desc:"QUALITY IMPACTED DUE TO HIGH T°", owner:""};
+			        else if(txs[i].transactionType == "CHANGE STATUS"){
+			          //litem = {transactionType:data.batch.transactionType, avatar:"ion-ios-bolt-outline", date: data.batch.vDate, location: data.batch.location, desc:"QUALITY IMPACTED DUE TO HIGH T°", owner:""};
 			        	html += '<tr>';
 						html +=	'<td>';
 						html +=	'<div style="font-size: 34px;color:#ef473a;float:right;"><i class="ion-ios-bolt-outline"></i></div>';
 						html += '</td>';
 						html += '<td style="text-align:left;padding-left:20px">';
 						html +=	'<div style="display: inline-block; vertical-align: middle;">';
-						html += '<p style="font-weight:500;color:#ef473a">QUALITY IMPACTED DUE TO HIGH TEMPERATURE</p>';
+						html += '<p style="font-weight:500;color:#ef473a">CURRENT STATUS: ' + data.item.status +'</p>';
 						html += '<p style="">' + txs[i].vDate +'</p>';
 						html += '<p style="">' + txs[i].location +'</p>';
-						html += '<p style="">Qty: ' + txs[i].quantity +'</p>';
 						html +=	'</div>';
 						html += '</td>';
 						html += '</tr>';
@@ -309,7 +310,7 @@ function connect_to_server(){
 
 				}
 
-				$("#batchDetailsBody").html(html);
+				$("#itemDetailsBody").html(html);
 			}
 			else if(data.msg === 'chainstats'){
 				if(data.blockstats.transactions)
@@ -331,10 +332,10 @@ function connect_to_server(){
 				$('#itemTag').qrcode(data.Id);
 			}
 			else if(data.msg === 'reset'){						
-				if(user.username && bag.session.user_role && bag.session.user_role.toUpperCase() === "certifier".toUpperCase()) {
+				if(user.username && bag.session.user_role && bag.session.user_role.toUpperCase() === "manufacturer".toUpperCase()) {
 					$('#spinner2').show();
 					$('#openTrades').hide();
-					ws.send(JSON.stringify({type: "getAllBatches", v: 2}));
+					ws.send(JSON.stringify({type: "getAllItems", v: 2}));
 				}
 			}
 		}
@@ -365,22 +366,22 @@ function connect_to_server(){
 // =================================================================================
 //	UI Building
 // =================================================================================
-function build_Batches(batches, panelDesc){
+function build_Items(items, panelDesc){
 	var html = '';
-	bag.batches = batches;					
+	bag.items = items;					
 	// If no panel is given, assume this is the trade panel
 	if(!panelDesc) {
 		panelDesc = panels[0];
 	}
 	
-	for(var i in batches){
-		//console.log('!', batches[i]);
+	for(var i in items){
+		console.log('!', items[i].id);
 		
-		if(excluded(batches[i], filter)) {
+		if(excluded(items[i].id, filter)) {
 			
-			// Create a row for each batch
+			// Create a row for each item
 			html += '<tr>';
-			html +=		'<td>' + batches[i] + '</td>';
+			html +=		'<td>' + items[i].id + '</td>';
 			html += '</tr>';
 			
 		}
@@ -404,7 +405,7 @@ var filter = {};
  * @type {string[]}
  */
 var names = [
-	"batchId"
+	"itemId"
 ];
 
 /**
@@ -434,7 +435,7 @@ function processFilterForm(panelDesc) {
 
 	console.log("New filter parameters: " + JSON.stringify(filter));
 	console.log("Rebuilding list");
-	build_Batches(bag.batches, panelDesc);
+	build_Batches(bag.items, panelDesc);
 }
 
 /**
