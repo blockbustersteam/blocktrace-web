@@ -39,7 +39,6 @@ router.route("/home").get(function(req, res){
 
 router.route("/newItem").get(function(req, res){
 	check_login(res, req);
-	console.log('ah ha');
 	res.render('part2', {title: 'CheckIt', bag: {setup: setup, e: process.error, session: req.session}} );
 });
 
@@ -180,6 +179,14 @@ router.route("/:page").post(function(req, res){
 					console.log("user role not specified, assuming:", "user");
 					req.session.user_role = "user";
 				}
+				
+				if(creds[i].location) {
+					console.log("user has specific location:", creds[i].location);
+					req.session.user_loc = creds[i].location;
+				} else {
+					console.log("user location not specified, set as unknown by default");
+					req.session.user_loc = "Unknown";
+				}
 
 				res.redirect('/newItem');
 				
@@ -196,8 +203,6 @@ module.exports = router;
 
 
 function check_login(res, req){
-	console.log('oh oh');
-	console.log(req.session.username);
 	if(!req.session.username || req.session.username == ''){
 		console.log('! not logged in, redirecting to login');
 		res.redirect('/login');

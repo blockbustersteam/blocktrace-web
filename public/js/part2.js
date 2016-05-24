@@ -25,6 +25,7 @@ var lastTx = ''
 // =================================================================================
 $(document).on('ready', function() {
 	connect_to_server();
+
 	if(user.username)
 	{
 		$("#userField").html(user.username+ ' ');
@@ -45,8 +46,6 @@ $(document).on('ready', function() {
 			$("#batchDetailsTable").hide();
 			
 		} else if(user.username) {
-			console.log('here');
-			console.log(bag.sesson.user_role);
 			$("#newItemLink").show();
 			$("#newItemPanel").show();
 			$("#dashboardLink").hide();
@@ -62,7 +61,7 @@ $(document).on('ready', function() {
 		if(user.username){
 			$("input[name='ItemId']").val(randStr(15).toUpperCase());
 		
-			$("input[name='Date']").val(formatDate(new Date(), '%d-%M-%Y %I:%m%p'));
+			$("input[name='Date']").val(formatDate(new Date(), '%Y-%m-%d %H:%M:$S'));
 			
 			$("#submit").removeAttr("disabled");		
 		}
@@ -74,17 +73,17 @@ $(document).on('ready', function() {
 		if(user.username){
 			var obj = 	{
 							type: "createItem",
-							batch: {
+							item: {
 								id: $("input[name='ItemId']").val(),
 								name: $("select[name='Name']").val(),
-								currentowner: $("select[name='Manufacturer']").val(),
+								currentowner: user.username, 
 								barcode: $("select[name='Barcode']").val(),
-								location: $("input[name='Location']").val(),
+								location: bag.session.user_loc,
 								vdate: $("input[name='Date']").val()
 							}
 						};
 
-			if(obj.batch && obj.batch.id){
+			if(obj.item && obj.item.id){
 				console.log('creating item, sending', obj);
 				ws.send(JSON.stringify(obj));
 				$(".panel").hide();
@@ -328,7 +327,8 @@ function connect_to_server(){
 				$("#notificationPanel").animate({width:'toggle'});
 				$('#spinner').hide();
 				$('#tagWrapper').show();
-				$('#itemTag').qrcode(data.itemId);
+				console.log(data.Id);
+				$('#itemTag').qrcode(data.Id);
 			}
 			else if(data.msg === 'reset'){						
 				if(user.username && bag.session.user_role && bag.session.user_role.toUpperCase() === "certifier".toUpperCase()) {
