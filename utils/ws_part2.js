@@ -50,7 +50,7 @@ module.exports.process_msg = function(ws, data, owner){
 	}
 	else if(data.type == 'changeStatus'){
 		console.log('Change status of single item', data, owner);
-		chaincode.query.changeStatus([data.item.id, owner, data.item.date, data.item.location, data.item.status], cb_invoked_changed_status);
+		chaincode.invoke.changeStatus([data.item.id, owner, data.item.date, data.item.location, data.item.status], cb_invoked_changed_status);
 	}
 
 	function cb_got_item(e, item){
