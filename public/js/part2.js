@@ -45,20 +45,24 @@ $(document).on('ready', function() {
 			$("#dashboardLink").show();
 			$("#transferLink").show();
 			$("#confirmLink").hide();
+			$("#changeStatusLink").show();
 			$("#dashboardPanel").hide();
 			$("#itemDetailsTable").hide();
 			$("#transferForm").hide();
 			$("#confirmForm").hide();
+			$("#changeStatusForm").hide();
 		} else if(user.username) {
 			$("#dashboardLink").show();
 			$("#transferLink").show();
 			$("#confirmLink").show();
+			$("#changeStatusLink").show();
 			$("#dashboardPanel").show();
 			$("#newItemLink").hide();
 			$("#newItemPanel").hide();
 			$("#itemDetailsTable").hide();
 			$("#transferForm").hide();
 			$("#confirmForm").hide();
+			$("#changeStatusForm").hide();
 		}
 
 	}
@@ -162,7 +166,7 @@ $(document).on('ready', function() {
 					user: user.username,
 					date: formatDate(Date(), '%Y-%m-%d %H:%M'),
 					location: bag.session.user_loc,
-					status: $("input[name='newStatus']").val()
+					status: $("select[name='newStatus']").val()
 				}
 			};
 			if(obj.item.id) {
@@ -195,6 +199,7 @@ $(document).on('ready', function() {
 			$("#newItemPanel").hide();
 			$("#transferForm").hide();
 			$("#confirmForm").hide();
+			$("#statusChangeForm").hide();
 			ws.send(JSON.stringify({type: "getAllItems", v: 2}));
 		}
 	});
@@ -208,6 +213,7 @@ $(document).on('ready', function() {
 			$("#newItemPanel").hide();
 			$("#transferForm").show();
 			$("#confirmForm").hide();
+			$("#statusChangeForm").hide();
 			ws.send(JSON.stringify({type: "getAllItemsStatus", itstatus: "VERIFIED", v: 2}));
 		}
 	});
@@ -221,7 +227,22 @@ $(document).on('ready', function() {
 			$("#newItemPanel").hide();
 			$("#confirmForm").show();
 			$("#transferForm").hide();
+			$("#statusChangeForm").hide();
 			ws.send(JSON.stringify({type: "getAllItemsStatus", itstatus: "IN OWNERSHIP TRANSIT", v: 2}));
+		}
+	});
+
+	$("#changeStatusLink").click(function(){
+		if(user.username) {
+			$("#dashboardPanel").show();
+			$('#spinner2').show();
+			$('#openTrades').hide();
+			$("#itemTagPanel").hide();
+			$("#newItemPanel").hide();
+			$("#transferForm").hide();
+			$("#confirmForm").hide();
+			$("#statusChangeForm").show();
+			ws.send(JSON.stringify({type: "getAllItems", v: 2}));
 		}
 	});
 
@@ -470,15 +491,6 @@ function build_Items(items, panelDesc){
 	if(!panelDesc) {
 		panelDesc = panels[0];
 	}
-
-	html += '<tr>';
-	html +=		'<td>Item ID</td>';
-	html +=		'<td>Item Name</td>';
-	html +=		'<td>Current Owner (see status!)</td>';
-	html +=		'<td>Manufacturer</td>';
-	html +=		'<td>Barcode</td>';
-	html +=		'<td>Status</td>';
-	html += '</tr>';
 	
 	for(var i in items){
 		console.log('!', items[i].id);
@@ -499,7 +511,7 @@ function build_Items(items, panelDesc){
 	}
 
 	// Placeholder for an empty table
-	if(html == '' && panelDesc.name === "dashboard") html = '<tr><td>Nothing here...</td></tr>';
+	if(html == '' && panelDesc.name === "dashboard") html = '<tr><td>Nothing here...</td><td></td><td></td><td></td><td></td><td></td></tr>';
 
 	$(panelDesc.tableID).html(html);
 }
