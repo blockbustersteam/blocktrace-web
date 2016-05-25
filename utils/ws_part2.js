@@ -10,6 +10,7 @@ module.exports.setup = function(sdk, cc){
 	chaincode = cc;
 };
 
+// Devesh: shouldn't 'owner' be renamed to 'user'
 module.exports.process_msg = function(ws, data, owner){
 	
 	
@@ -42,6 +43,14 @@ module.exports.process_msg = function(ws, data, owner){
 	else if(data.type == 'getAllItemsStatus'){
 		console.log('Get All Items By Status', data.itstatus, owner);
 		chaincode.query.getCurrentOwnerItemsByStatus([owner, data.itstatus], cb_got_allitems);
+	}
+	else if(data.type == 'getItemByBarcode'){
+		console.log('Get single Item By Barcode', data.barcode);
+		chaincode.query.getItemDetailsWithBarcode([data.barcode], cb_got_item);
+	}
+	else if(data.type == 'changeStatus'){
+		console.log('Change status of single item', data, owner);
+		chaincode.query.changeStatus([data.itemId, owner, data.item.date, data.item.location, data.itstatus], cb_invoked_changed_status);
 	}
 
 	function cb_got_item(e, item){
@@ -92,6 +101,17 @@ module.exports.process_msg = function(ws, data, owner){
 		else{
 			console.log("Item ID #" + data.item.id)
 			sendMsg({msg: 'itemConfirmed'});
+		}
+	}
+
+	function cb_invoked_changed_status(e, a){
+		console.log('response: ', e, a);
+		if(e != null){
+			console.log('Invoked change status error', e);
+		}
+		else{
+			console.log("Item ID #" + data.item.id)
+			sendMsg({msg: 'itemChangedStatus'});
 		}
 	}
 
