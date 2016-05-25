@@ -147,7 +147,29 @@ $(document).on('ready', function() {
 				ws.send(JSON.stringify(obj));
 			}
 			else {
-				slert("Please select items to confirm first");
+				alert("Please select items to confirm first");
+			}
+		}
+		return false;
+	});
+
+	$("#changestatussubmit").click(function(){
+		if(user.username){
+			var obj = {
+				type: "changeStatus",
+				item: {
+					id: itId,
+					user: user.username,
+					date: formatDate(Date(), '%Y-%m-%d %H:%M'),
+					location: bag.session.user_loc,
+					status: $("input[name='newStatus']").val()
+				}
+			};
+			if(obj.item.id) {
+				ws.send(JSON.stringify(obj));
+			}
+			else {
+				alert("Please select items to change status for first");
 			}
 		}
 		return false;
@@ -403,6 +425,9 @@ function connect_to_server(){
 			else if(data.msg === 'itemConfirmed'){
 				alert('Transfer confirmed!');
 			}
+			else if(data.msg === 'itemChangedStatus'){
+				alert('Change status confirmed!');
+			}
 			else if(data.msg === 'reset'){						
 				if(user.username && bag.session.user_role && bag.session.user_role.toUpperCase() === "manufacturer".toUpperCase()) {
 					$('#spinner2').show();
@@ -445,6 +470,15 @@ function build_Items(items, panelDesc){
 	if(!panelDesc) {
 		panelDesc = panels[0];
 	}
+
+	html += '<tr>';
+	html +=		'<td>Item ID</td>';
+	html +=		'<td>Item Name</td>';
+	html +=		'<td>Current Owner (see status!)</td>';
+	html +=		'<td>Manufacturer</td>';
+	html +=		'<td>Barcode</td>';
+	html +=		'<td>Status</td>';
+	html += '</tr>';
 	
 	for(var i in items){
 		console.log('!', items[i].id);
@@ -454,6 +488,11 @@ function build_Items(items, panelDesc){
 			// Create a row for each item
 			html += '<tr>';
 			html +=		'<td>' + items[i].id + '</td>';
+			html +=		'<td>' + items[i].name + '</td>';
+			html +=		'<td>' + items[i].currentOwner + '</td>';
+			html +=		'<td>' + items[i].manufacturer + '</td>';
+			html +=		'<td>' + items[i].barcode + '</td>';
+			html +=		'<td>' + items[i].status + '</td>';
 			html += '</tr>';
 			
 		}

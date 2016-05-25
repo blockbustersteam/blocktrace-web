@@ -10,7 +10,7 @@ module.exports.setup = function(sdk, cc){
 	chaincode = cc;
 };
 
-// Devesh: shouldn't 'owner' be renamed to 'user'
+// Devesh: shouldn't 'owner' be renamed to 'user'. Also errors that are received from server side need to be handled better and actually displayed to the browser.
 module.exports.process_msg = function(ws, data, owner){
 	
 	
@@ -50,7 +50,7 @@ module.exports.process_msg = function(ws, data, owner){
 	}
 	else if(data.type == 'changeStatus'){
 		console.log('Change status of single item', data, owner);
-		chaincode.query.changeStatus([data.itemId, owner, data.item.date, data.item.location, data.itstatus], cb_invoked_changed_status);
+		chaincode.query.changeStatus([data.item.id, owner, data.item.date, data.item.location, data.item.status], cb_invoked_changed_status);
 	}
 
 	function cb_got_item(e, item){
