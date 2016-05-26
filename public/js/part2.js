@@ -88,9 +88,8 @@ $(document).on('ready', function() {
 							type: "createItem",
 							item: {
 								id: $("input[name='ItemId']").val(),
-								name: $("input[name='Name']").val(),
+								barcode: $("select[name='Barcode']").val(),
 								currentowner: user.username, 
-								barcode: $("input[name='Barcode']").val(),
 								location: bag.session.user_loc,
 								vdate: $("input[name='Date']").val()
 							}
@@ -500,10 +499,9 @@ function build_Items(items, panelDesc){
 			// Create a row for each item
 			html += '<tr>';
 			html +=		'<td>' + items[i].id + '</td>';
-			html +=		'<td>' + items[i].name + '</td>';
+			html +=		'<td>' + items[i].barcode + '</td>';
 			html +=		'<td>' + items[i].currentOwner + '</td>';
 			html +=		'<td>' + items[i].manufacturer + '</td>';
-			html +=		'<td>' + items[i].barcode + '</td>';
 			html +=		'<td>' + items[i].status + '</td>';
 			html += '</tr>';
 			
