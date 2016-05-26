@@ -8,17 +8,18 @@
 		form(action="/newItem" method="POST")#newItemform
 			legend 
 				input(type="text" name="ItemId" placeholder="Item Id" disabled)
-			legend 
-				input(type="text" name="Name" placeholder="Name")
 			legend
-				input(type="text" name="Barcode" placeholder="Barcode")
+				select(name = "Barcode")
+					option(value="") Product Barcode
+					option(value="9300605042391") 9300605042391
+					option(value="9310434001766") 9310434001766
+					option(value="9310434001759") 9310434001759
 			legend 
 				input(type="text" name="Date" placeholder="Date" disabled)
 			legend
 				button(type="button" style="margin:10px 10px 5px 10px")#generate
 					span.fa.fa-cog &nbsp;&nbsp;
 					span GENERATE
-
 			legend
 				button(type="button" style="margin:10px 10px 5px 10px" disabled)#submit
 					span.fa.fa-plus &nbsp;&nbsp;

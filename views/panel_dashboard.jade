@@ -22,18 +22,17 @@
 		a.filter-button(href="#dashboardModal") Filter Transactions
 		br
 		br
-		table#dashboardTable.tablesorter(style="width:30%")
+		table#dashboardTable.tablesorter(style="width:70%;float:left")
 			thead
 				tr 
-					th ITEM ID
-					th Item Name
-					th Current Owner (see status!)
+					th Item ID
+					th Product Barcode
+					th Current Owner
 					th Manufacturer
-					th Barcode
 					th Status
 			tbody#dashboardBody
 
-		table#itemDetailsTable.tablesorter(style="width:64%")
+		table#itemDetailsTable.tablesorter(style="width:24%;float:right")
 			thead
 				tr 
 					th#bDetHeader(colspan="2" style="font-size: 12px;")
@@ -48,7 +47,8 @@
 				button(type="button" href="#confirm" title="Confirm")#confirmsubmit
 					span CONFIRM 
 			form(action="/dashboard" method="POST")#statusChangeForm
-				select(name = "newStatus" placeholder="New Status")
+				select(name = "newStatus")
+					option(value="") New Status
 					option(value="SOLD") SOLD
 					option(value="STOLEN") STOLEN
 					option(value="POTENTIAL COUNTERFEIT") POTENTIAL COUNTERFEIT
