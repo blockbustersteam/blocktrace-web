@@ -88,8 +88,9 @@ $(document).on('ready', function() {
 							type: "createItem",
 							item: {
 								id: $("input[name='ItemId']").val(),
-								barcode: $("select[name='Barcode']").val(),
+								name: $("input[name='Name']").val(),
 								currentowner: user.username, 
+								barcode: $("input[name='Barcode']").val(),
 								location: bag.session.user_loc,
 								vdate: $("input[name='Date']").val()
 							}
@@ -352,14 +353,14 @@ function connect_to_server(){
 				$("#itemDetailsTable").show();
 				for(var i=0; i<txs.length; i++){
 					console.log(txs[i]);
-					$("#bDetHeader").html("ITEM #" + data.item.id);
+					$("#bDetHeader").html("ITEM #" + data.item.id + ' - <span style="font-size:16px;font-weight:500">' + data.item.name + '</span>');
 
 
 					if(txs[i].transactionType == "CREATE"){
 			          //litem = {avatar:"ion-ios-box-outline", date: tx.vDate, location: tx.location, desc:"ADDED BY ", owner:tx.owner};
 				        html += '<tr>';
 						html +=	'<td>';
-						html +=	'<div style="font-size: 20px;color:#5596E6;float:right;"><i class="icon ion-ios-box-outline"></i></div>';
+						html +=	'<div style="font-size: 34px;color:#5596E6;float:right;"><i class="icon ion-ios-box-outline"></i></div>';
 						html += '</td>';
 						html += '<td style="text-align:left;padding-left:20px">';
 						html +=	'<div style="display: inline-block; vertical-align: middle;">';
@@ -374,7 +375,7 @@ function connect_to_server(){
 			          //litem = {avatar:"ion-ios-barcode-outline", date: data.batch.vDate, location: data.batch.location, desc:"PICKED UP BY ", owner:data.batch.owner};
 			        	html += '<tr>';
 						html +=	'<td>';
-						html +=	'<div style="font-size: 20px;color:#5596E6;float:right;"><i class="ion-ios-barcode-outline"></i></div>';
+						html +=	'<div style="font-size: 34px;color:#5596E6;float:right;"><i class="ion-ios-barcode-outline"></i></div>';
 						html += '</td>';
 						html += '<td style="text-align:left;padding-left:20px">';
 						html +=	'<div style="display: inline-block; vertical-align: middle;">';
@@ -389,7 +390,7 @@ function connect_to_server(){
 			          //litem = {avatar:"ion-ios-shuffle", date: data.batch.vDate, location: data.batch.location, desc:"DELIVERED TO ", owner:data.batch.owner};
 			        	html += '<tr>';
 						html +=	'<td>';
-						html +=	'<div style="font-size: 20px;color:#5596E6;float:right;"><i class="ion-ios-shuffle"></i></div>';
+						html +=	'<div style="font-size: 34px;color:#5596E6;float:right;"><i class="ion-ios-shuffle"></i></div>';
 						html += '</td>';
 						html += '<td style="text-align:left;padding-left:20px">';
 						html +=	'<div style="display: inline-block; vertical-align: middle;">';
@@ -404,7 +405,7 @@ function connect_to_server(){
 			          //litem = {transactionType:data.batch.transactionType, avatar:"ion-ios-bolt-outline", date: data.batch.vDate, location: data.batch.location, desc:"QUALITY IMPACTED DUE TO HIGH T°", owner:""};
 			        	html += '<tr>';
 						html +=	'<td>';
-						html +=	'<div style="font-size: 20px;color:#ef473a;float:right;"><i class="ion-ios-bolt-outline"></i></div>';
+						html +=	'<div style="font-size: 34px;color:#ef473a;float:right;"><i class="ion-ios-bolt-outline"></i></div>';
 						html += '</td>';
 						html += '<td style="text-align:left;padding-left:20px">';
 						html +=	'<div style="display: inline-block; vertical-align: middle;">';
@@ -499,9 +500,10 @@ function build_Items(items, panelDesc){
 			// Create a row for each item
 			html += '<tr>';
 			html +=		'<td>' + items[i].id + '</td>';
-			html +=		'<td>' + items[i].barcode + '</td>';
+			html +=		'<td>' + items[i].name + '</td>';
 			html +=		'<td>' + items[i].currentOwner + '</td>';
 			html +=		'<td>' + items[i].manufacturer + '</td>';
+			html +=		'<td>' + items[i].barcode + '</td>';
 			html +=		'<td>' + items[i].status + '</td>';
 			html += '</tr>';
 			
